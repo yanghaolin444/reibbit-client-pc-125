@@ -1,7 +1,7 @@
 <template>
   <AppTopnav />
   <AppHeaderSticky />
-  <AppHeader />
+  <AppHeader/>
   <Home />
   <AppFooter />
 </template>

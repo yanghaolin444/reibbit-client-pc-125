@@ -1,7 +1,12 @@
 <template>
-  <div class="home-category"  @mouseleave="categoryId=null">
+  <div class="home-category" @mouseleave="categoryId = null">
     <ul class="menu">
-      <li :class="{active:categoryId===item.id}"  v-for="item in menuList" :key="item.id"  @mouseenter="categoryId=item.id">
+      <li
+        :class="{ active: categoryId === item.id }"
+        v-for="item in menuList"
+        :key="item.id"
+        @mouseenter="categoryId = item.id"
+      >
         <RouterLink :to="`/category/${item.id}`">{{ item.name }}</RouterLink>
         <template v-if="item.children">
           <RouterLink
@@ -12,20 +17,32 @@
             {{ sub.name }}
           </RouterLink>
         </template>
+        <span v-else>
+          <XtxSkeleton
+            height="18px"
+            width="60px"
+            bg="rgba(255,255,255,0.2)"
+            style="margin-right: 5px"
+          />
+          <XtxSkeleton height="18px" width="50px" bg="rgba(255,255,255,0.2)" />
+        </span>
       </li>
     </ul>
     <!-- 弹层 -->
     <div class="layer">
-      <h4>{{currCategory&&currCategory.id==='brand'?'品牌':'分类'}}推荐 <small>根据您的购买或浏览记录推荐</small></h4>
+      <h4>
+        {{ currCategory && currCategory.id === "brand" ? "品牌" : "分类" }}推荐
+        <small>根据您的购买或浏览记录推荐</small>
+      </h4>
       <!-- 商品 -->
       <ul v-if="currCategory && currCategory.goods">
         <li v-for="item in currCategory.goods" :key="item.id">
           <RouterLink to="/">
-            <img :src="item.picture" alt="">
+            <img :src="item.picture" alt="" />
             <div class="info">
-              <p class="name ellipsis-2">{{item.name}}</p>
-              <p class="desc ellipsis">{{item.desc}}</p>
-              <p class="price"><i>¥</i>{{item.price}}</p>
+              <p class="name ellipsis-2">{{ item.name }}</p>
+              <p class="desc ellipsis">{{ item.desc }}</p>
+              <p class="price"><i>¥</i>{{ item.price }}</p>
             </div>
           </RouterLink>
         </li>
@@ -34,11 +51,13 @@
       <ul v-if="currCategory && currCategory.brands">
         <li class="brand" v-for="brand in currCategory.brands" :key="brand.id">
           <RouterLink to="/">
-            <img :src="brand.picture" alt="">
+            <img :src="brand.picture" alt="" />
             <div class="info">
-              <p class="place"><i class="iconfont icon-dingwei"></i>{{brand.place}}</p>
-              <p class="name ellipsis">{{brand.name}}</p>
-              <p class="desc ellipsis-2">{{brand.desc}}</p>
+              <p class="place">
+                <i class="iconfont icon-dingwei"></i>{{ brand.place }}
+              </p>
+              <p class="name ellipsis">{{ brand.name }}</p>
+              <p class="desc ellipsis-2">{{ brand.desc }}</p>
             </div>
           </RouterLink>
         </li>
@@ -50,8 +69,8 @@
   <script>
 import { useStore } from "vuex";
 import { reactive, computed } from "vue";
-import { ref } from 'vue'
-import { findBrand } from '@/api/home.js'
+import { ref } from "vue";
+import { findBrand } from "@/api/home.js";
 export default {
   name: "HomeCategory",
   // 1. 获取vuex的一级分类，并且只需要两个二级分类
@@ -63,7 +82,7 @@ export default {
       id: "brand",
       name: "品牌",
       children: [{ id: "brand-chilren", name: "品牌推荐" }],
-      brands: []
+      brands: [],
     });
 
     const store = useStore();
@@ -85,9 +104,9 @@ export default {
     const currCategory = computed(() => {
       return menuList.value.find((item) => item.id === categoryId.value);
     });
-       findBrand().then(data=>{
-        brand.brands = data.result
-    })
+    findBrand().then((data) => {
+      brand.brands = data.result;
+    });
 
     return { menuList, categoryId, currCategory };
   },
@@ -95,6 +114,17 @@ export default {
 </script>
   
   <style scoped lang='less'>
+.xtx-skeleton {
+  animation: fade 1s linear infinite alternate;
+}
+@keyframes fade {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
+  }
+}
 .home-category {
   width: 250px;
   height: 500px;
